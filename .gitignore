@@ -1,0 +1,5 @@
+packages/
+figures/bin/
+figures/obj/
+.nuget/
+*.suo
