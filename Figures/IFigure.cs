@@ -17,8 +17,6 @@ namespace Figures
         void Move(double x, double y);
         void Resize(double k);
 
-
         void Print();
-
     }
 }
