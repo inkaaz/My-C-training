@@ -13,7 +13,7 @@ namespace Figures
         public double YCoordinate { get; set; }
         public double Angle { get; set; }
 
-        public abstract void RotateClockwize(double angle);
+        public abstract void RotateClockwise(double angle);
 
         public void Move(double x, double y)
         {
@@ -48,7 +48,7 @@ namespace Figures
         public double SideA { get; set; }
         public double SideB { get; set; }
 
-        public override void RotateClockwize(double angle)
+        public override void RotateClockwise(double angle)
         {
             double halfDiagonal = Math.Sqrt(Math.Pow(SideA / 2, 2) + Math.Pow(SideB / 2, 2));
             this.Angle += angle;
@@ -80,7 +80,7 @@ namespace Figures
             RadiusA = b;
         }
 
-        public override void RotateClockwize(double angle) { }
+        public override void RotateClockwise(double angle) { }
 
         public Ellipse(int a, int b) : this(0, 0, a, b) { }
 
@@ -118,7 +118,7 @@ namespace Figures
             Length = Length * k;
         }
 
-        public override void RotateClockwize(double angle)
+        public override void RotateClockwise(double angle)
         {
             this.Angle += angle;
             this.XCoordinate = XCoordinate - Math.Cos(angle) * Length / 2;

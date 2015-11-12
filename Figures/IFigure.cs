@@ -13,7 +13,7 @@ namespace Figures
         double YCoordinate { get; set; }
         double Angle { get; set; }
 
-        void RotateClockwize(double angle);
+        void RotateClockwise(double angle);
         void Move(double x, double y);
         void Resize(double k);
 

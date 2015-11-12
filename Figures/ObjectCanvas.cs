@@ -98,7 +98,7 @@ namespace Figures
                 ActionWithFigure undoAction = new ActionWithFigure(figure, RotateClockwize, -angle);
                 undoStack.Push(undoAction);
             }
-            figure.RotateClockwize(angle);
+            figure.RotateClockwise(angle);
             Console.WriteLine("Rotate Figure {0}", figure.ID);
             return figure.ID;
         }
