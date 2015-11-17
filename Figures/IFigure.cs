@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Figures
+﻿namespace Figures
 {
     public interface IFigure
     {
         int ID {get; set;}
-        double XCoordinate { get; set; }
-        double YCoordinate { get; set; }
-        double Angle { get; set; }
+        double CenterX { get; }
+        double CenterY { get; }
+        Orientation FigureOrientation { get; }
 
-        void RotateClockwise(double angle);
+        void RotateClockwise();
         void Move(double x, double y);
         void Resize(double k);
 

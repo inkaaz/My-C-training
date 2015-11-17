@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Figures
 {
-
     public class ActionWithFigure
-    {
-        public IFigure FigureToAction { get; set; }
+    {        
         private ActionWithoutParams actionWithoutParams;
         private double param1;
         private double param2;
         private ActionWithOneParam oneParamAction;
         private ActionWithTwoParams twoParamsAction;
 
+        public IFigure FigureToAction { get; set; }
         public delegate int ActionWithoutParams(IFigure f, bool isUndoAction);
         public delegate int ActionWithOneParam(IFigure f, double param, bool isUndoAction);
         public delegate int ActionWithTwoParams(IFigure f, double param1, double param2, bool isUndoAction);

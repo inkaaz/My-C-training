@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
 namespace Figures
 {
     public class ObjectCanvas
     {
         private Dictionary<int, IFigure> figureDic;
+
+        public Dictionary<int, IFigure> FigureDic
+        {
+            get { return figureDic; }
+        }
 
         Stack<ActionWithFigure> undoStack;       
 
@@ -34,6 +39,7 @@ namespace Figures
         {
             if (!figureDic.ContainsKey(i))
             {
+                Console.WriteLine("There is no  figure with id {0}", i);
                 return null;
             }
             return ResizeFigure(figureDic[i], k, false);
@@ -56,6 +62,7 @@ namespace Figures
         {
             if (!figureDic.ContainsKey(i))
             {
+                Console.WriteLine("There is no  figure with id {0}", i);
                 return null;
             }
             return MoveFigure(figureDic[i], deltaX, deltaY, false);
@@ -73,37 +80,28 @@ namespace Figures
             return figure.ID;
         }
 
-        public int? RotateClockwize(int i, double angle)
+        public int? RotateClockwize(int i)
         {
             if (!figureDic.ContainsKey(i))
             {
+                Console.WriteLine("There is no  figure with id {0}", i);
                 return null;
             }
-            return RotateClockwize(figureDic[i], angle, false);
-        }
+            return RotateClockwize(figureDic[i],  false);
+        }       
 
-        public int? RotateAntiClockwize(int i, double angle)
-        {
-            if (!figureDic.ContainsKey(i))
-            {
-                return null;
-            }
-            return RotateClockwize(figureDic[i], -angle, false);
-        }
-
-        private int RotateClockwize(IFigure figure, double angle, bool isUndoAction = false)
+        private int RotateClockwize(IFigure figure, bool isUndoAction = false)
         {
             if (!isUndoAction)
             {
-                ActionWithFigure undoAction = new ActionWithFigure(figure, RotateClockwize, -angle);
+                ActionWithFigure undoAction = new ActionWithFigure(figure, RotateClockwize);
                 undoStack.Push(undoAction);
             }
-            figure.RotateClockwise(angle);
+            figure.RotateClockwise();
             Console.WriteLine("Rotate Figure {0}", figure.ID);
             return figure.ID;
         }
-
-
+        
         public int AddFigure(IFigure figure, bool isUndoAction = false)
         {            
             if (!isUndoAction)
@@ -115,8 +113,7 @@ namespace Figures
             }            
             if (!figureDic.ContainsKey(figure.ID))
             {
-                figureDic.Add(figure.ID, figure);
-                
+                figureDic.Add(figure.ID, figure);                
             }
             else
             {
@@ -129,6 +126,7 @@ namespace Figures
         {
             if (!figureDic.ContainsKey(i))
             {
+                Console.WriteLine("There is no  figure with id {0}", i);
                 return null;
             }
             return RemoveFigure(figureDic[i], false);
@@ -139,6 +137,10 @@ namespace Figures
             if (figureDic.ContainsKey(figure.ID))
             {
                 figureDic.Remove(figure.ID);
+                if (figure.ID == maxID - 1)
+                {
+                    maxID--;
+                }
             }
             if (!isUndoAction)
             {
@@ -165,5 +167,6 @@ namespace Figures
             }
             Console.ReadKey();
         }
+
     }
 }
