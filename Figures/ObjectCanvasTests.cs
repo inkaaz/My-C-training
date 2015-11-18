@@ -56,10 +56,11 @@ namespace Figures
         {
             var canvas = new ObjectCanvas();
 
-            canvas.AddFigure(new LineSegment(5));
+            canvas.AddFigure(new LineSegment(6));
             canvas.RotateClockwize(0);
 
-            Assert.True(canvas.FigureDic[0].);
+            Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
+                        && canvas.FigureDic[0].);
    
         }
     }
