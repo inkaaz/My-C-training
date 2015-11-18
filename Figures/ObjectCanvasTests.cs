@@ -56,12 +56,56 @@ namespace Figures
         {
             var canvas = new ObjectCanvas();
 
+            int startX = 0;
+            int startY = 0;
             canvas.AddFigure(new LineSegment(6));
             canvas.RotateClockwize(0);
 
             Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
-                        && canvas.FigureDic[0].);
-   
+                        && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
+        }
+
+        [Test]
+        public void EllipseRotation90Test()
+        {
+            var canvas = new ObjectCanvas();
+
+            int startX = 0;
+            int startY = 0;
+            canvas.AddFigure(new Ellipse(6, 2));
+            canvas.RotateClockwize(0);
+
+            Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
+                        && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
+        }
+
+        [Test]
+        public void RectangleRotation90Test()
+        {
+            var canvas = new ObjectCanvas();
+
+            int startX = 6;
+            int startY = 4;
+            canvas.AddFigure(new Rectangle(startX, startY, 20, 10));
+            canvas.RotateClockwize(0);
+
+            Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
+                        && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
+        }
+
+        [Test]
+        public void RectangleRotation90UndoTest()
+        {
+            var canvas = new ObjectCanvas();
+
+            int startX = 6;
+            int startY = 4;
+            canvas.AddFigure(new Rectangle(startX, startY, 20, 10));
+            canvas.RotateClockwize(0);
+            canvas.Undo(1);
+
+            Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Horizontal
+                        && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
         }
     }
 }
