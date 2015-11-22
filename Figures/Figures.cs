@@ -41,6 +41,11 @@ namespace Figures
             }        
         }
 
+        public void RotateAntiClockwise()
+        {
+            RotateClockwise();
+        }
+
         public void Move(double x, double y)
         {
             this.centerX += x;

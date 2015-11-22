@@ -107,5 +107,8 @@ namespace Figures
             Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Horizontal
                         && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
         }
+
+        //[Test]
+        //public void 
     }
 }
