@@ -46,7 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionWithFigure.cs" />
-    <Compile Include="IFigure.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="Operations.cs" />
     <Compile Include="ObjectCanvas.cs" />
     <Compile Include="ObjectCanvasTests.cs" />
     <Compile Include="Program.cs" />

@@ -1,160 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
 
 namespace Figures
 {
     public class ObjectCanvas
     {
-        private Dictionary<int, IFigure> figureDic;
-
-        Stack<ActionWithFigure> undoStack;       
-
-        private int maxID;
+        public Dictionary<int, IFigure> FigureDic { get; set; }
+        
+        private Stack<Tuple<IOperation, IFigure>> undoStack = new Stack<Tuple<IOperation, IFigure>>();
+        private int maxID = 0;
+      
         public ObjectCanvas()
         {
-            figureDic = new Dictionary<int, IFigure>();
-            undoStack = new Stack<ActionWithFigure>();
-            maxID = 0;
+            FigureDic = new Dictionary<int, IFigure>();
+        }
+
+        public void DecreaseMaxId()
+        {
+            maxID--;
         }
 
         public void Undo(int times)
         {
-            ActionWithFigure a;
             for (int i = 0; i < times; i++)
             {
-                a = undoStack.Pop();
-                a.RunFunction();
-            }        
+                var currentUndoTuple = undoStack.Pop();
+                var figure = currentUndoTuple.Item2;
+                var undoOperation = currentUndoTuple.Item1.GetRevertOperation();
+
+                undoOperation.Apply(this, figure);
+            }
         }
 
-        public int? Resize(int i, double k)
+        public void ApplyOperation(IOperation operation, IFigure figure) 
         {
-            if (!figureDic.ContainsKey(i))
-            {
-                return null;
-            }
-            return ResizeFigure(figureDic[i], k, false);
-        }
-
-        private int ResizeFigure(IFigure figure, double k, bool isUndoAction = false)
-        {
-            if (!isUndoAction)
-            {
-                ActionWithFigure undoAction = new ActionWithFigure(figure, ResizeFigure, 1/k);
-                undoStack.Push(undoAction);
-            }
-
-            figure.Resize(k);
-            Console.WriteLine("Resize Figure {0}", figure.ID);
-            return figure.ID;
-        }
-
-        public int? Move(int i, double deltaX, double deltaY)
-        {
-            if (!figureDic.ContainsKey(i))
-            {
-                return null;
-            }
-            return MoveFigure(figureDic[i], deltaX, deltaY, false);
-        }
-
-        private int MoveFigure(IFigure figure, double deltaX, double deltaY, bool isUndoAction = false)
-        {
-            if (!isUndoAction)
-            {
-                ActionWithFigure undoAction = new ActionWithFigure(figure, MoveFigure, -deltaX, -deltaY);
-                undoStack.Push(undoAction);
-            }
-            figure.Move(deltaX, deltaY);
-            Console.WriteLine("Move Figure {0}", figure.ID);
-            return figure.ID;
-        }
-
-        public int? RotateClockwize(int i, double angle)
-        {
-            if (!figureDic.ContainsKey(i))
-            {
-                return null;
-            }
-            return RotateClockwize(figureDic[i], angle, false);
-        }
-
-        public int? RotateAntiClockwize(int i, double angle)
-        {
-            if (!figureDic.ContainsKey(i))
-            {
-                return null;
-            }
-            return RotateClockwize(figureDic[i], -angle, false);
-        }
-
-        private int RotateClockwize(IFigure figure, double angle, bool isUndoAction = false)
-        {
-            if (!isUndoAction)
-            {
-                ActionWithFigure undoAction = new ActionWithFigure(figure, RotateClockwize, -angle);
-                undoStack.Push(undoAction);
-            }
-            figure.RotateClockwize(angle);
-            Console.WriteLine("Rotate Figure {0}", figure.ID);
-            return figure.ID;
-        }
-
-
-        public int AddFigure(IFigure figure, bool isUndoAction = false)
-        {            
-            if (!isUndoAction)
-            {
-                figure.ID = maxID++;
-                ActionWithFigure undoAction = new ActionWithFigure(figure, RemoveFigure);
-                undoStack.Push(undoAction);
-                Console.WriteLine("Add Figure {0}", figure.ID);
-            }            
-            if (!figureDic.ContainsKey(figure.ID))
-            {
-                figureDic.Add(figure.ID, figure);
-                
-            }
-            else
-            {
-                Console.WriteLine("Error on adding, a figure with ID {0} already exists", figure.ID);
-            }
-            return figure.ID;
-        }
-
-        public int? Remove(int i)
-        {
-            if (!figureDic.ContainsKey(i))
-            {
-                return null;
-            }
-            return RemoveFigure(figureDic[i], false);
-        }
-
-        private int RemoveFigure(IFigure figure, bool isUndoAction = false)
-        {
-            if (figureDic.ContainsKey(figure.ID))
-            {
-                figureDic.Remove(figure.ID);
-            }
-            if (!isUndoAction)
-            {
-                ActionWithFigure undoAction = new ActionWithFigure(figure, AddFigure);
-                undoStack.Push(undoAction);
-                Console.WriteLine("Remove Figure {0}", figure.ID);
-            }
-
-            return figure.ID;
+            operation.Apply(this, figure);
+            undoStack.Push(new Tuple<IOperation, IFigure>(operation, figure));
         }
 
         public void PrintAllFigures()
         {
-            if (figureDic.Count > 0)
+            if (FigureDic.Count > 0)
             {
-                foreach (var f in figureDic)
+                foreach (var f in FigureDic)
                 {
                     f.Value.Print();
                 }
@@ -163,7 +55,9 @@ namespace Figures
             {
                 Console.WriteLine("Dictionary is empty");
             }
+            
             Console.ReadKey();
         }
+
     }
 }

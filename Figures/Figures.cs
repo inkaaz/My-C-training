@@ -1,24 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Figures
 {
     public abstract class Figure: IFigure
     {
+#region properties
+		
         public int ID { get; set; }
-        public double XCoordinate { get; set; }
-        public double YCoordinate { get; set; }
-        public double Angle { get; set; }
+        protected double centerX;
+        protected double centerY;
 
-        public abstract void RotateClockwize(double angle);
+        protected Orientation orientation;
+        
+        public double CenterX
+        {
+            get { return centerX; }
+        }
+
+        public double CenterY
+        {
+            get { return centerY; }
+        }
+
+        public Orientation FigureOrientation
+        {
+            get { return orientation; }
+        }
+ 
+	#endregion
+
+        public void RotateClockwise()
+        {      
+            if (orientation == Orientation.Horizontal)
+            {
+                orientation = Orientation.Vertical;
+            }
+            else
+            {
+                orientation = Orientation.Horizontal;
+            }        
+        }
+
+        public void RotateAntiClockwise()
+        {
+            RotateClockwise();
+        }
 
         public void Move(double x, double y)
         {
-            this.XCoordinate += x;
-            this.YCoordinate += y;
+            this.centerX += x;
+            this.centerY += y;
         }
 
         public abstract void Resize(double k);
@@ -27,108 +58,113 @@ namespace Figures
         {
             Console.WriteLine();
             Console.WriteLine("I am {0}, ID = {1}", this.GetType(),ID);
-            Console.WriteLine("XCoordinate is {0}", XCoordinate);
-            Console.WriteLine("YCoordinate is {0}", YCoordinate);
-            Console.WriteLine("Angle is {0}", Angle);
+            Console.WriteLine("CenterX is {0}", centerX);
+            Console.WriteLine("CenterY is {0}", centerY);
+            Console.WriteLine("Orientation is {0}", orientation);
         }
     }
 
     public class Rectangle : Figure
     {
-        public Rectangle(double x, double y, int a, int b)
+        public Rectangle(double x, double y, int width, int length)
         {
-            XCoordinate = x;
-            YCoordinate = y;
-            SideA = a;
-            SideB = b;
+            centerX = x;
+            centerY = y;
+            sideA = width;
+            sideB = length;
+            if (sideA > sideB)
+            { 
+                orientation = Orientation.Horizontal;
+            }
+            else
+            {
+                orientation = Orientation.Vertical;
+            }
+
         }
 
-        public Rectangle(int a, int b) : this(0, 0, a, b) { }
+        public Rectangle(int width, int length) : this(0, 0, width, length) { }
 
-        public double SideA { get; set; }
-        public double SideB { get; set; }
-
-        public override void RotateClockwize(double angle)
-        {
-            double halfDiagonal = Math.Sqrt(Math.Pow(SideA / 2, 2) + Math.Pow(SideB / 2, 2));
-            this.Angle += angle;
-            this.XCoordinate = XCoordinate - Math.Cos(angle) * halfDiagonal / 2;
-            this.XCoordinate = XCoordinate - Math.Sin(angle) * halfDiagonal / 2;
-        }
+        private double sideA;
+        private double sideB;        
 
         public override void Resize(double k)
         {
-            SideA = SideA * k;
-            SideB = SideB * k;
+            sideA = sideA * k;
+            sideB = sideB * k;
         }
 
         public override void Print()
         {
             base.Print();
-            Console.WriteLine("SideA is {0}", SideA);
-            Console.WriteLine("SideB is {0}", SideB);
+            Console.WriteLine("SideA is {0}", sideA);
+            Console.WriteLine("SideB is {0}", sideB);
         }
     }
 
     public class Ellipse : Figure
     {
-        public Ellipse(double x, double y, int a, int b)
+        public Ellipse(double x, double y, int width, int length)
         {
-            XCoordinate = x;
-            YCoordinate = y;
-            RadiusA = a;
-            RadiusA = b;
+            centerX = x;
+            centerY = y;
+            radiusA = width;
+            radiusB = length;
+            if (radiusA > radiusB)
+            {
+                orientation = Orientation.Horizontal;
+            }
+            else
+            {
+                orientation = Orientation.Vertical;
+            }
         }
 
-        public override void RotateClockwize(double angle) { }
+        //public override void RotateClockwise(double angle) { }
 
         public Ellipse(int a, int b) : this(0, 0, a, b) { }
 
-        public double RadiusA { get; set; }
-        public double RadiusB { get; set; }
+        private double radiusA;
+        private double radiusB;
 
         public override void Resize(double k)
         {
-            RadiusA = RadiusA * k;
-            RadiusB = RadiusB * k;
+            radiusA = radiusA * k;
+            radiusB = radiusB * k;
         }
 
         public override void Print()
         {
             base.Print();
-            Console.WriteLine("RadiusA is {0}", RadiusA);
-            Console.WriteLine("RadiusB is {0}", RadiusB);
+            Console.WriteLine("RadiusA is {0}", radiusA);
+            Console.WriteLine("RadiusB is {0}", radiusB);
         }
     }
 
     public class LineSegment : Figure
     {
-        public LineSegment(double x, double y, int a)
+       
+
+        public LineSegment(double x, double y, int length)
         {
-            XCoordinate = x;
-            YCoordinate = y;
-            Length = a;
+            centerX = x;
+            centerY = y;
+            this.length = length;
+            orientation = Orientation.Horizontal;
         }
 
         public LineSegment(int a) : this(0, 0, a) { }
 
-        public double Length { get; set; }
+        private double length;
         public override void Resize(double k)
         {
-            Length = Length * k;
+            length = length * k;
         }
-
-        public override void RotateClockwize(double angle)
-        {
-            this.Angle += angle;
-            this.XCoordinate = XCoordinate - Math.Cos(angle) * Length / 2;
-            this.XCoordinate = XCoordinate - Math.Sin(angle) * Length / 2;
-        }
-
+        
         public override void Print()
         {
             base.Print();
-            Console.WriteLine("Length is {0}", Length);
+            Console.WriteLine("Length is {0}", length);
         }
 
     }
