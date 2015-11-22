@@ -10,43 +10,46 @@ namespace Figures
         {
             var canvas = new ObjectCanvas();
 
-            canvas.AddFigure(new Rectangle(5, 10));
-            canvas.AddFigure(new Ellipse(5, 10));
-            canvas.AddFigure(new LineSegment(5));
-            canvas.AddFigure(new Rectangle(5, 10, 40, 50));
-            canvas.AddFigure(new Ellipse(5, 10, 40, 20));
+            var addOperation = new AddFigureOperation();
 
-            Assert.True(canvas.FigureDic.Count == 5);        
+            canvas.ApplyOperation(addOperation, new Rectangle(5, 10));
+            canvas.ApplyOperation(addOperation, new Ellipse(5, 10));
+            canvas.ApplyOperation(addOperation, new LineSegment(5));
+            canvas.ApplyOperation(addOperation, new Rectangle(5, 10, 40, 50));
+            canvas.ApplyOperation(addOperation, new Ellipse(5, 10, 40, 20));
+
+            Assert.True(canvas.FigureDic.Count == 5);  
         }
 
         [Test]
-        public void AddFiveFiguresAndUndoTest()
+        public void AddFiguresAndUndoTest()
         {
             var canvas = new ObjectCanvas();
 
-            canvas.AddFigure(new Rectangle(5, 10));
-            canvas.AddFigure(new Ellipse(5, 10));
-            canvas.AddFigure(new LineSegment(5));
-            canvas.AddFigure(new Rectangle(5, 10, 40, 50));
-            canvas.AddFigure(new Ellipse(5, 10, 40, 20));
+            var addOperation = new AddFigureOperation();
+
+            canvas.ApplyOperation(addOperation, new Rectangle(5, 10));
+            canvas.ApplyOperation(addOperation, new Ellipse(5, 10));
+            canvas.ApplyOperation(addOperation, new LineSegment(5));
 
             canvas.Undo(2);
 
-            Assert.True(canvas.FigureDic.Count == 3);
+            Assert.True(canvas.FigureDic.Count == 1);
         }
 
         [Test]
         public void AddingAfterUndoTest()
         {
             var canvas = new ObjectCanvas();
-                        
-            canvas.AddFigure(new LineSegment(5));
-            canvas.AddFigure(new Rectangle(5, 10, 40, 50));
-            canvas.AddFigure(new Ellipse(5, 10, 40, 20));
+
+            var addOperation = new AddFigureOperation();
+            canvas.ApplyOperation(addOperation, new Rectangle(5, 10));
+            canvas.ApplyOperation(addOperation, new Ellipse(5, 10));
+            canvas.ApplyOperation(addOperation, new LineSegment(5));
 
             canvas.Undo(2);
 
-            canvas.AddFigure(new Ellipse(5, 10, 40, 20));
+            canvas.ApplyOperation(addOperation, new Ellipse(5, 10, 40, 20));
 
             Assert.True(canvas.FigureDic.ContainsKey(1) && canvas.FigureDic[1] is Ellipse);
         }
@@ -58,8 +61,12 @@ namespace Figures
 
             int startX = 0;
             int startY = 0;
-            canvas.AddFigure(new LineSegment(6));
-            canvas.RotateClockwize(0);
+
+            var addOperation = new AddFigureOperation();
+            canvas.ApplyOperation(addOperation, new LineSegment(6));
+
+            var rotateClockwizeOperation = new RotateClockwizeOperation();
+            canvas.ApplyOperation(rotateClockwizeOperation, canvas.FigureDic[0]);
 
             Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
                         && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
@@ -72,8 +79,11 @@ namespace Figures
 
             int startX = 0;
             int startY = 0;
-            canvas.AddFigure(new Ellipse(6, 2));
-            canvas.RotateClockwize(0);
+            var addOperation = new AddFigureOperation();
+            canvas.ApplyOperation(addOperation, new Ellipse(6, 2));
+
+            var rotateClockwizeOperation = new RotateClockwizeOperation();
+            canvas.ApplyOperation(rotateClockwizeOperation, canvas.FigureDic[0]);
 
             Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
                         && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
@@ -86,8 +96,12 @@ namespace Figures
 
             int startX = 6;
             int startY = 4;
-            canvas.AddFigure(new Rectangle(startX, startY, 20, 10));
-            canvas.RotateClockwize(0);
+            
+            var addOperation = new AddFigureOperation();
+            canvas.ApplyOperation(addOperation, new Rectangle(startX, startY, 20, 10));
+
+            var rotateClockwizeOperation = new RotateClockwizeOperation();
+            canvas.ApplyOperation(rotateClockwizeOperation, canvas.FigureDic[0]);
 
             Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Vertical
                         && canvas.FigureDic[0].CenterX == startX && canvas.FigureDic[0].CenterY == startY);
@@ -97,11 +111,15 @@ namespace Figures
         public void RectangleRotation90UndoTest()
         {
             var canvas = new ObjectCanvas();
-
+            
             int startX = 6;
             int startY = 4;
-            canvas.AddFigure(new Rectangle(startX, startY, 20, 10));
-            canvas.RotateClockwize(0);
+            
+            var addOperation = new AddFigureOperation();
+            canvas.ApplyOperation(addOperation, new Rectangle(startX, startY, 20, 10));
+
+            var rotateClockwizeOperation = new RotateClockwizeOperation();
+            canvas.ApplyOperation(rotateClockwizeOperation, canvas.FigureDic[0]);
             canvas.Undo(1);
 
             Assert.True(canvas.FigureDic[0].FigureOrientation == Orientation.Horizontal

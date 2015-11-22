@@ -9,20 +9,20 @@ namespace Figures
     public interface IOperation 
     {
         IOperation GetRevertOperation();
-        // void Apply(ICanvas canvas);
+        void Apply(ObjectCanvas canvas, IFigure figure);
     }
 
-    public interface ICanvasOperation : IOperation
-    {
-        void ApplyToCanvas(ICanvas canvas);
-    }
+    //public interface ICanvasOperation : IOperation
+    //{
+    //    void ApplyToCanvas(ICanvas canvas);
+    //}
 
-    public interface IFigureOperation : IOperation
-    {
-        void ApplyToFigure(IFigure figure);
-    }
+    //public interface IFigureOperation : IOperation
+    //{
+    //    void ApplyToFigure(IFigure figure);
+    //}
 
-    public class ResizeOperation : IFigureOperation
+    public class ResizeOperation : IOperation
     {
         double k;
         public ResizeOperation(double k)
@@ -30,7 +30,7 @@ namespace Figures
             this.k = k;
         }
 
-        public void ApplyToFigure(IFigure figure)
+        public void Apply(ObjectCanvas canvas, IFigure figure)
         {
             figure.Resize(k);
         }
@@ -41,7 +41,7 @@ namespace Figures
         }
     }
 
-    public class MoveOperation : IFigureOperation
+    public class MoveOperation : IOperation
     {
         double x;
         double y;
@@ -51,7 +51,7 @@ namespace Figures
             this.y = y;
         }
 
-        public void ApplyToFigure(IFigure figure)
+        public void Apply(ObjectCanvas canvas, IFigure figure)
         {
             figure.Move(x, y);
         }
@@ -62,9 +62,9 @@ namespace Figures
         }
     }
 
-    public class RotateClockwizeOperation : IFigureOperation
+    public class RotateClockwizeOperation : IOperation
     {
-        public void ApplyToFigure(IFigure figure)
+        public void Apply(ObjectCanvas canvas, IFigure figure)
         {
             figure.RotateClockwise();
         }
@@ -75,9 +75,9 @@ namespace Figures
         }
     }
 
-    public class RotateAntiClockwizeOperation : IFigureOperation
+    public class RotateAntiClockwizeOperation : IOperation
     {
-        public void ApplyToFigure(IFigure figure)
+        public void Apply(ObjectCanvas canvas, IFigure figure)
         {
             figure.RotateAntiClockwise();
         }
@@ -89,16 +89,14 @@ namespace Figures
     }
 
 
-    public class AddFigureOperation : ICanvasOperation
+    public class AddFigureOperation : IOperation
     {
-        IFigure figure;
-        public AddFigureOperation(IFigure figure)
+        public void Apply(ObjectCanvas canvas, IFigure figure)
         {
-            this.figure = figure;            
-        }
-
-        public void ApplyToCanvas(ICanvas canvas)
-        {
+            if (figure.ID == 0 && canvas.FigureDic.Count > 0)
+            {
+                figure.ID = canvas.FigureDic.Max(v => v.Key) + 1;
+            }
             if (!canvas.FigureDic.ContainsKey(figure.ID))
             {
                 canvas.FigureDic.Add(figure.ID, figure);
@@ -111,19 +109,13 @@ namespace Figures
 
         public IOperation GetRevertOperation()
         {
-            return new RemoveFigureOperation(figure);
+            return new RemoveFigureOperation();
         }
     }
 
-    public class RemoveFigureOperation : ICanvasOperation
-    {
-        IFigure figure;
-        public RemoveFigureOperation(IFigure figure)
-        {
-            this.figure = figure;
-        }
-
-        public void ApplyToCanvas(ICanvas canvas)
+    public class RemoveFigureOperation : IOperation
+    {        
+        public void Apply(ObjectCanvas canvas, IFigure figure)
         {
             if (canvas.FigureDic.ContainsKey(figure.ID))
             {
@@ -137,7 +129,7 @@ namespace Figures
 
         public IOperation GetRevertOperation()
         {
-            return new AddFigureOperation(figure);
+            return new AddFigureOperation();
         }
     }
 }
